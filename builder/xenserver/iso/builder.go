@@ -52,6 +52,7 @@ func (self *Builder) Prepare(raws ...interface{}) (params []string, retErr error
 
 	err := hconfig.Decode(&self.config, &hconfig.DecodeOpts{
 		Interpolate: true,
+		InterpolateContext: &self.config.ctx,
 		InterpolateFilter: &interpolate.RenderFilter{
 			Exclude: []string{
 				"boot_command",
@@ -285,7 +286,8 @@ func (self *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (pa
 		},
 		new(xscommon.StepBootWait),
 		&xscommon.StepTypeBootCommand{
-			Ctx: self.config.ctx,
+			BootCommand: self.config.BootCommand,
+			Ctx:         self.config.ctx,
 		},
 		&xscommon.StepWaitForIP{
 			Chan:    httpReqChan,
